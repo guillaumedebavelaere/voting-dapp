@@ -29,7 +29,6 @@ function ProposalRegistration() {
         setHasError(false);
       })
       .on('error', function(error, receipt) {
-        console.log(error);
         setHasError(true);
         setLoader(false);
       });

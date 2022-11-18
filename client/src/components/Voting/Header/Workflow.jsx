@@ -10,7 +10,7 @@ function Workflow({ status }) {
     "Proposals Registration Ended",
     "Voting Session Started",
     "Voting Session Ended",
-    "VotesTallied"
+    "Votes Tallied"
   ];
 
   return (

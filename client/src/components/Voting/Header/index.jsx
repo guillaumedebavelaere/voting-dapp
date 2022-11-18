@@ -4,6 +4,7 @@ import { Alert, Button, CircularProgress } from "@mui/material";
 import Address from "./Address";
 import { useEth } from "../../../contexts/EthContext";
 import { useState } from "react";
+import { ProposalsRegistrationEnded, ProposalsRegistrationStarted, RegisteringVoters, VotesTallied, VotingSessionEnded, VotingSessionStarted } from "../Common";
 
 function Header({ status, setStatus, isOwner }) {
     const { state: { contract, accounts } } = useEth();
@@ -11,15 +12,14 @@ function Header({ status, setStatus, isOwner }) {
     const [hasError, setHasError] = useState(false);
 
     const nextStep = () => {
-        console.log("status: !" + status);
         switch (status) {
-            case 0:
+            case RegisteringVoters:
                 contract.methods.startProposalsRegistering().send({ from: accounts[0] })
                     .on('transactionHash', (transactionHash) => {
                         setLoader(true);
                     })
                     .on('receipt', function (receipt) {
-                        setStatus(1);
+                        setStatus(ProposalsRegistrationStarted);
                         setLoader(false);
                         setHasError(false);
                     })
@@ -28,9 +28,65 @@ function Header({ status, setStatus, isOwner }) {
                         setHasError(true);
                     });
                 break;
-            case 1:
+            case ProposalsRegistrationStarted:
+                contract.methods.endProposalsRegistering().send({ from: accounts[0] })
+                    .on('transactionHash', (transactionHash) => {
+                        setLoader(true);
+                    })
+                    .on('receipt', function (receipt) {
+                        setStatus(ProposalsRegistrationEnded);
+                        setLoader(false);
+                        setHasError(false);
+                    })
+                    .on('error', function (error, receipt) {
+                        setLoader(false);
+                        setHasError(true);
+                    });
                 break;
-            case 2:
+            case ProposalsRegistrationEnded:
+                contract.methods.startVotingSession().send({ from: accounts[0] })
+                    .on('transactionHash', (transactionHash) => {
+                        setLoader(true);
+                    })
+                    .on('receipt', function (receipt) {
+                        setStatus(VotingSessionStarted);
+                        setLoader(false);
+                        setHasError(false);
+                    })
+                    .on('error', function (error, receipt) {
+                        setLoader(false);
+                        setHasError(true);
+                    });
+                break;
+            case VotingSessionStarted:
+                contract.methods.endVotingSession().send({ from: accounts[0] })
+                    .on('transactionHash', (transactionHash) => {
+                        setLoader(true);
+                    })
+                    .on('receipt', function (receipt) {
+                        setStatus(VotingSessionEnded);
+                        setLoader(false);
+                        setHasError(false);
+                    })
+                    .on('error', function (error, receipt) {
+                        setLoader(false);
+                        setHasError(true);
+                    });
+                break;
+            case VotingSessionEnded:
+                contract.methods.tallyVotes().send({ from: accounts[0] })
+                    .on('transactionHash', (transactionHash) => {
+                        setLoader(true);
+                    })
+                    .on('receipt', function (receipt) {
+                        setStatus(VotesTallied);
+                        setLoader(false);
+                        setHasError(false);
+                    })
+                    .on('error', function (error, receipt) {
+                        setLoader(false);
+                        setHasError(true);
+                    });
                 break;
             default:
                 break;
@@ -44,7 +100,7 @@ function Header({ status, setStatus, isOwner }) {
                 <Workflow status={status} />
             </Grid2>
             <Grid2 xs={2}>
-                {isOwner && status != 6 && <Button
+                {isOwner && status !== VotesTallied && <Button
                     type="submit"
                     variant="contained"
                     disabled={loader}

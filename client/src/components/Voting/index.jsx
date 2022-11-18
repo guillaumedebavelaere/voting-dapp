@@ -11,7 +11,7 @@ function Voting() {
   const [status, setStatus] = useState(0);
 
   const isOwner = () => {
-      return owner !== undefined && owner === accounts[0];
+    return owner !== undefined && owner === accounts[0];
   }
 
   useEffect(() => {
@@ -22,6 +22,18 @@ function Voting() {
       }
     })();
   }, [contract]);
+
+  useEffect(() => {
+    (async function () {
+      if (contract != null) {
+        contract.events.WorkflowStatusChange({ fromBlock: "earliest" })
+          .on('data', async event => {
+            setStatus(parseInt(event.returnValues.newStatus))
+          })
+          .on('error', err => console.log("err: " + err))
+      }
+    })();
+  });
 
   return (
     <> {
