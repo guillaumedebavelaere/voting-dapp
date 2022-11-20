@@ -31,7 +31,7 @@ Truffle
 Ganache
 
 ### Install dependencies
-`npm install`
+`yarn install`
 
 ### Deploy contract
 
@@ -49,9 +49,16 @@ It contains the front end application written in React with web3js dependency to
 
 ### Install dependencies
 
-`npm install`
+`yarn install`
 
 ### Run server
 
 `yarn start`
+
+### Demo
+
+https://www.loom.com/share/37f9afd12b6b480a802fb0d4f75f4907
+
+
+
 
