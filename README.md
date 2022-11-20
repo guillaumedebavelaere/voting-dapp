@@ -59,6 +59,6 @@ It contains the front end application written in React with web3js dependency to
 
 https://www.loom.com/share/37f9afd12b6b480a802fb0d4f75f4907
 
+### Deployment
 
-
-
+https://voting-dapp-guillaumedebavelaere.vercel.app/
