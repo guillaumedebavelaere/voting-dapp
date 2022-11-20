@@ -1,23 +1,7 @@
-import { useEffect } from "react";
 import { TableCell, TableRow, Table, TableBody, TableHead, Typography } from "@mui/material"
-import { useEth } from "../../../contexts/EthContext";
 import { VotesTallied } from "../Common";
 
-function Voters({status, voters, setVoters, setAddVoter}) {
-  const { state: { contract, accounts } } = useEth();
-
-
-useEffect(() => {
-  (async () => {
-      if (VotesTallied) {
-          const votersWithDetails = await Promise.all(voters.map(async (voter) => {
-              const voterWithDetail = await contract.methods.getVoter(voter.id).call({ from: accounts[0] });
-              return { id: voter.id, ...voterWithDetail };
-          }));
-          setVoters(votersWithDetails);
-      }
-  })();
-}, [])
+function Voters({status, voters}) {
 
   return (
     <>
